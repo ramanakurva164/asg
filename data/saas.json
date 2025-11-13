@@ -1,0 +1,27 @@
+[
+  {
+    "id": "saas_001",
+    "title": "Login Troubleshooting Guide",
+    "text": "If users cannot log in, verify email format, check SSO configuration, confirm token expiry, and ensure the user has correct role permissions. Inspect logs at /var/log/auth-service for errors."
+  },
+  {
+    "id": "saas_002",
+    "title": "API Rate Limits",
+    "text": "Free tier users are limited to 100 requests per minute. Pro tier has 1,000 requests per minute. Exceeding limits returns HTTP 429 Too Many Requests."
+  },
+  {
+    "id": "saas_003",
+    "title": "Data Backup Policy",
+    "text": "All customer data is backed up daily at 2 AM UTC. Backups are retained for 30 days. Redundant storage ensures 99.9% durability."
+  },
+  {
+    "id": "saas_004",
+    "title": "Role-Based Access Controls",
+    "text": "SaaS accounts support Admin, Manager, Editor, Viewer roles. Only Admins can manage billing and user provisioning."
+  },
+  {
+    "id": "saas_005",
+    "title": "Webhooks Overview",
+    "text": "Webhooks support event types such as user.created, invoice.generated, and subscription.renewed. Webhooks must reply with 2xx within 5 seconds."
+  }
+]

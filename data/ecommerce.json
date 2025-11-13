@@ -1,0 +1,27 @@
+[
+  {
+    "id": "eco_001",
+    "title": "Product A Specifications",
+    "text": "Product A features a 12-inch display, 8GB RAM, and 256GB SSD. Price ₹7,999. Includes a one-year limited warranty. Available in black and silver."
+  },
+  {
+    "id": "eco_002",
+    "title": "Product B Specifications",
+    "text": "Product B is a Bluetooth-enabled smart speaker with 360-degree sound, 20-hour battery life, and water resistance. Price ₹3,499."
+  },
+  {
+    "id": "eco_003",
+    "title": "Coupon & Discount Rules",
+    "text": "Coupons cannot be combined. A maximum discount of ₹500 applies per order. Festival coupons are valid only once per user."
+  },
+  {
+    "id": "eco_004",
+    "title": "Inventory & Stock Status",
+    "text": "Items marked 'In Stock' ship within 24 hours. 'Out of Stock' items cannot be purchased. Customers can opt-in for restock alerts."
+  },
+  {
+    "id": "eco_005",
+    "title": "Payment Methods",
+    "text": "Supported payment methods include UPI, credit cards, debit cards, net banking, and cash on delivery. EMI available for orders above ₹5,000."
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "cs_001",
+    "title": "Return Policy",
+    "text": "Customers may return items within 30 days of purchase. A receipt or digital invoice is required. Refunds are issued to the original payment method. Items must be unused and in resalable condition."
+  },
+  {
+    "id": "cs_002",
+    "title": "Replacement Policy",
+    "text": "Defective items are eligible for free replacement within 14 days. Customers must share photos of the defect. Replacement shipping is free of cost."
+  },
+  {
+    "id": "cs_003",
+    "title": "Shipping Information",
+    "text": "Standard shipping takes 5–7 business days. Express shipping takes 1–2 days. Tracking information is provided via email after dispatch."
+  },
+  {
+    "id": "cs_004",
+    "title": "Cancellation Rules",
+    "text": "Orders can be canceled within 2 hours of placement. After the order is processed, cancellation may not be possible."
+  },
+  {
+    "id": "cs_005",
+    "title": "Warranty Coverage",
+    "text": "Most electronics come with a 1-year manufacturer warranty covering manufacturing defects, but not accidental damage or misuse."
+  }
+]

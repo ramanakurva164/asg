@@ -1,0 +1,7 @@
+// filepath: h:\asg1\.gitignore
+.env
+.streamlit/secrets.toml
+__pycache__/
+*.pyc
+venv/
+chroma_data/

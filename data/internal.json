@@ -1,0 +1,27 @@
+[
+  {
+    "id": "int_001",
+    "title": "HR Leave Policy",
+    "text": "Employees receive 18 paid leaves annually. A maximum of 5 unused leaves can be carried over. Leave applications exceeding 5 consecutive days require manager approval."
+  },
+  {
+    "id": "int_002",
+    "title": "Expense Reimbursement Rules",
+    "text": "Employees may claim travel, food, and lodging expenses incurred during official work. Claims must be submitted within 15 days using the company portal."
+  },
+  {
+    "id": "int_003",
+    "title": "IT Security Guidelines",
+    "text": "All employees must enable MFA, avoid sharing passwords, update devices regularly, and report phishing attempts to security@company.com."
+  },
+  {
+    "id": "int_004",
+    "title": "Code of Conduct",
+    "text": "Employees must maintain professionalism, respect co-workers, and avoid conflicts of interest. Violations may lead to disciplinary action."
+  },
+  {
+    "id": "int_005",
+    "title": "Internal Communication Policy",
+    "text": "Teams should use Slack for daily communication and email for official approvals. Sensitive information must not be shared through personal messaging apps."
+  }
+]
