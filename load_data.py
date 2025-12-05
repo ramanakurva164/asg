@@ -40,7 +40,7 @@ def load_json_to_pinecone_index(json_file_path, index_name):
     print(f"\nSummary: {success} succeeded, {failed} failed\n")
 
 def load_all_indexes():
-    """Load all configured JSON files to their Pinecone indexes."""load_all_indexes()
+    """Load all configured JSON files to their Pinecone indexes."""
     print("\n🚀 Starting data load to Pinecone indexes...\n")
     load_json_to_pinecone_index("data/customer_service.json", os.getenv("PINECONE_INDEX_CUSTOMER_SERVICE"))
     load_json_to_pinecone_index("data/ecommerce.json", os.getenv("PINECONE_INDEX_ECOMMERCE"))
