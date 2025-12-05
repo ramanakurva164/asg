@@ -9,6 +9,7 @@ from embedding import embed_texts
 from connectors.planner.planner import plan_steps_for_query
 from connectors.planner.executor import execute_plan
 from utils import best_sentences_for_query
+from load_data import load_all_default_indexes
 
 RELEVANCE_THRESHOLD = 0.10
 
@@ -65,6 +66,10 @@ def init_state():
     
     if "active_bot" not in st.session_state:
         st.session_state.active_bot = "customer_service"
+@st.cache_resource
+def initialize_pinecone_data():
+    load_all_default_indexes()
+    return "done"
 
 def create_new_session(bot_key):
     """Create a new chat session for a specific bot"""
@@ -95,7 +100,9 @@ def get_active_session(bot_key):
 
 init_state()
 st.set_page_config(layout="wide", page_title="Multi-Chatbot Platform")
+initialize_pinecone_data()
 st.title("Multi-Chatbot Platform — Pinecone Backend")
+
 
 # Sidebar
 with st.sidebar:
