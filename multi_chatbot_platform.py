@@ -1,4 +1,3 @@
-# app/multi_chatbot_platform.py
 import streamlit as st
 import os, json, re
 from datetime import datetime
@@ -10,11 +9,9 @@ from embedding import embed_texts
 from connectors.planner.planner import plan_steps_for_query
 from connectors.planner.executor import execute_plan
 from utils import best_sentences_for_query
-from load_data import load_json_to_pinecone_index, load_all_indexes
-import tempfile, concurrent.futures, pathlib
 
 
-RELEVANCE_THRESHOLD = 0.0
+RELEVANCE_THRESHOLD = 0.10
 
 DEFAULT_BOTS = {
     "customer_service": {
@@ -99,7 +96,9 @@ def get_active_session(bot_key):
 
 init_state()
 st.set_page_config(layout="wide", page_title="Multi-Chatbot Platform")
+
 st.title("Multi-Chatbot Platform — Pinecone Backend")
+
 
 # Sidebar
 with st.sidebar:
@@ -118,6 +117,7 @@ with st.sidebar:
         st.session_state.active_bot = bot_choice
     
     bot = st.session_state.bots[bot_choice]
+    st.caption(f"DEBUG – using index: {bot['index_name']}")
     
     # Show bot info
     with st.expander("ℹ️ Bot Info"):
@@ -186,23 +186,27 @@ with st.sidebar:
     uploaded_file = st.file_uploader("Upload JSON data", type=['json'], key=f"upload_{bot_choice}")
     if uploaded_file and st.button("Load to Database", key=f"load_{bot_choice}"):
         try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as tf:
-                tf.write(uploaded_file.getvalue())
-                temp_path = tf.name
+            data = json.load(uploaded_file)
             index_name = bot["index_name"]
-            # run sync (fast) or background for larger loads:
-            with st.spinner(f"Loading {pathlib.Path(temp_path).name} → index '{index_name}'..."):
-                load_json_to_pinecone_index(temp_path, index_name)
-            st.success("Upload finished.")
+            
+            success_count = 0
+            with st.spinner(f"Loading {len(data)} documents..."):
+                for item in data:
+                    try:
+                        embedding = embed_texts([item.get("text", "")])[0]
+                        pinecone_client.pinecone_upsert_to_index(
+                            index_name,
+                            item.get("id"), 
+                            embedding, 
+                            {"title": item.get("title", ""), "text": item.get("text", "")}
+                        )
+                        success_count += 1
+                    except Exception as e:
+                        st.error(f"Failed to load {item.get('id')}: {e}")
+            
+            st.success(f"✓ Loaded {success_count}/{len(data)} documents to index '{index_name}'")
         except Exception as e:
-            st.error(f"Error loading file: {e}")
-
-    # Example: button to load all local data files (run in background)
-    if st.button("Load all local data to Pinecone (all indexes)"):
-        st.info("Starting background load. This may take a few minutes.")
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-        future = executor.submit(load_all_indexes)
-        st.success("Load triggered in background. Check terminal for progress.")
+            st.error(f"Error loading data: {e}")
 
 # Main layout
 col_left, col_right = st.columns([1.4, 1])
@@ -279,7 +283,6 @@ with col_right:
                         top_k=4
                     )
                     st.write(f"Found {len(retrieved)} documents")
-                    print(f"DEBUG: Retrieved docs: {retrieved}")
 
             # Check relevance
             if not retrieved or retrieved[0][0] < RELEVANCE_THRESHOLD:
@@ -327,4 +330,3 @@ with col_right:
     #             for k, v in st.session_state.bots.items()
     #         }
     #     })
-
