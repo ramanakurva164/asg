@@ -39,30 +39,15 @@ def load_json_to_pinecone_index(json_file_path, index_name):
     
     print(f"\nSummary: {success} succeeded, {failed} failed\n")
 
-def load_all_default_indexes():
-    print("\n🚀 Starting data load to Pinecone indexes...\n")
-    
-    load_json_to_pinecone_index(
-        "data/customer_service.json",
-        os.getenv("PINECONE_INDEX_CUSTOMER_SERVICE")
-    )
-    load_json_to_pinecone_index(
-        "data/ecommerce.json",
-        os.getenv("PINECONE_INDEX_ECOMMERCE")
-    )
-    load_json_to_pinecone_index(
-        "data/saas.json",
-        os.getenv("PINECONE_INDEX_SAAS")
-    )
-    load_json_to_pinecone_index(
-        "data/internal.json",
-        os.getenv("PINECONE_INDEX_INTERNAL")
-    )
-    
-    print("\n✅ All data loaded successfully!\n")
 
 
 if __name__ == "__main__":
-    # still works if you run python load_data.py locally
-    load_all_default_indexes()
+    print("\n🚀 Starting data load to Pinecone indexes...\n")
+    
+    # Load data for all 4 chatbot indexes
+    load_json_to_pinecone_index("data/customer_service.json", os.getenv("PINECONE_INDEX_CUSTOMER_SERVICE"))
+    load_json_to_pinecone_index("data/ecommerce.json", os.getenv("PINECONE_INDEX_ECOMMERCE"))
+    load_json_to_pinecone_index("data/saas.json", os.getenv("PINECONE_INDEX_SAAS"))
+    load_json_to_pinecone_index("data/internal.json", os.getenv("PINECONE_INDEX_INTERNAL"))
+    
     print("\n✅ All data loaded successfully!\n")
