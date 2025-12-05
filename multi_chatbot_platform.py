@@ -292,9 +292,8 @@ with col_right:
                     st.write(f"Found {len(retrieved)} documents")
 
             # Check relevance
-            if not retrieved or retrieved[0][0] < RELEVANCE_THRESHOLD:
-                clar = ("I couldn't find sufficiently relevant documents in this bot's database. "
-                        "Per system rules I cannot guess. Please clarify or provide supporting documents.")
+            if not retrieved:
+                clar = "No documents returned from Pinecone."
                 st.warning(clar)
                 active_session["messages"].append({"role": "assistant", "content": clar})
             else:
