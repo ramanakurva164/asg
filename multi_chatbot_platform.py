@@ -293,43 +293,43 @@ with col_right:
 
             # Check relevance
             if not retrieved:
-    clar = "No documents returned from Pinecone."
-    st.warning(clar)
-    active_session["messages"].append({"role": "assistant", "content": clar})
-else:
-    with st.spinner("Generating grounded answer..."):
-        try:
-            resp = execute_plan(steps, retrieved, query)
-        except Exception as e:
-            # Show the error instead of infinite "Running..."
-            st.error(f"Error while generating answer: {e}")
-            resp = None
-
-    if resp is not None:
-        # Debug: see exactly what the executor returned
-        with st.expander("🔍 Debug – raw executor response"):
-            st.write(resp)
-
-        # Safely extract answer & citations assuming resp is a dict
-        answer = resp.get("answer") if isinstance(resp, dict) else None
-        citations = resp.get("citations", []) if isinstance(resp, dict) else []
-
-        if not answer:
-            st.warning("Executor returned no 'answer' field. Check executor/planner code.")
-        else:
-            st.success("**Answer (grounded):**")
-            st.write(answer)
-
-            if citations:
-                st.markdown("**Citations:**")
-                for c in citations:
-                    st.write("- " + c)
-
-            active_session["messages"].append({
-                "role": "assistant",
-                "content": answer,
-                "citations": citations,
-            })
+                clar = "No documents returned from Pinecone."
+                st.warning(clar)
+                active_session["messages"].append({"role": "assistant", "content": clar})
+            else:
+                with st.spinner("Generating grounded answer..."):
+                    try:
+                        resp = execute_plan(steps, retrieved, query)
+                    except Exception as e:
+                        # Show the error instead of infinite "Running..."
+                        st.error(f"Error while generating answer: {e}")
+                        resp = None
+            
+                if resp is not None:
+                    # Debug: see exactly what the executor returned
+                    with st.expander("🔍 Debug – raw executor response"):
+                        st.write(resp)
+            
+                    # Safely extract answer & citations assuming resp is a dict
+                    answer = resp.get("answer") if isinstance(resp, dict) else None
+                    citations = resp.get("citations", []) if isinstance(resp, dict) else []
+            
+                    if not answer:
+                        st.warning("Executor returned no 'answer' field. Check executor/planner code.")
+                    else:
+                        st.success("**Answer (grounded):**")
+                        st.write(answer)
+            
+                        if citations:
+                            st.markdown("**Citations:**")
+                            for c in citations:
+                                st.write("- " + c)
+            
+                        active_session["messages"].append({
+                            "role": "assistant",
+                            "content": answer,
+                            "citations": citations,
+                        })
 
             
             #st.rerun()
