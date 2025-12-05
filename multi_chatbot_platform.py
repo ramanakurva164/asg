@@ -121,6 +121,7 @@ with st.sidebar:
         st.session_state.active_bot = bot_choice
     
     bot = st.session_state.bots[bot_choice]
+    st.caption(f"DEBUG – using index: {bot['index_name']}")
     
     # Show bot info
     with st.expander("ℹ️ Bot Info"):
