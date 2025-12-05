@@ -9,36 +9,37 @@ def simple_tokenize_sentences(text: str) -> List[str]:
 
 def best_sentences_for_query(
     texts: Union[str, List[str]],
-    query: Union[str, List[str]],
+    query: str,
     k: int = 2
 ) -> List[str]:
     """
     Robust version:
-    - texts can be a single string OR a list of strings (multiple docs)
-    - query can be a string OR a list (we join it)
-    - never crashes with '... has no attribute lower'
+    - `texts` can be a single string OR list of strings (multiple docs)
+    - `query` must be a string
+    - returns top-k sentences that overlap most with query words
     """
 
-    # 🔹 Normalize texts → single big string
+    # 🔹 Normalize texts → one big string
     if isinstance(texts, list):
-        texts = "\n".join([t for t in texts if isinstance(t, str)])
+        texts = "\n".join(t for t in texts if isinstance(t, str))
     elif not isinstance(texts, str):
         texts = str(texts)
 
-    # 🔹 Normalize query → single string
-    if isinstance(query, list):
-        query = " ".join([str(q) for q in query])
-    elif not isinstance(query, str):
+    # 🔹 Ensure query is a string
+    if not isinstance(query, str):
         query = str(query)
 
-    # now both are safe strings
+    # 1) Split into sentences
     sents = simple_tokenize_sentences(texts)
 
+    # 2) Tokenize query
     qtok = set(re.findall(r"\w+", query.lower()))
-    scored = []
+
+    scored: List[tuple[int, str]] = []
     for s in sents:
         stok = set(re.findall(r"\w+", s.lower()))
-        scored.append((len(qtok & stok), s))
+        score = len(qtok & stok)
+        scored.append((score, s))
 
     scored.sort(key=lambda x: x[0], reverse=True)
-    return [s for _, s in scored[:k]] if scored else sents[:k]
+    return [s for score, s in scored[:k]] if scored else sents[:k]
