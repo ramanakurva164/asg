@@ -282,57 +282,67 @@ with col_right:
 
             # Retrieve from Pinecone
             retrieved = []
-            if emb_vec:
-                with st.spinner(f"Searching Pinecone index '{bot['index_name']}'..."):
-                    retrieved = pinecone_client.pinecone_query_index(
-                        bot["index_name"],
-                        vectors=emb_vec, 
-                        top_k=4
-                    )
-                    st.write(f"Found {len(retrieved)} documents")
+if emb_vec is not None:
+    with st.spinner(f"Searching Pinecone index '{bot['index_name']}'..."):
+        retrieved = pinecone_client.pinecone_query_index(
+            bot["index_name"],
+            vectors=emb_vec,
+            top_k=4
+        )
+        st.write(f"Found {len(retrieved)} documents")
 
-            # Check relevance
-            if not retrieved:
-                clar = "No documents returned from Pinecone."
-                st.warning(clar)
-                active_session["messages"].append({"role": "assistant", "content": clar})
-            else:
-                # 👇 Simple answer directly from retrieved docs, no external LLM
-                with st.spinner("Generating grounded answer (simple mode)..."):
-                    try:
-                        # If you already have a helper, use it
-                        # (you import best_sentences_for_query at the top)
-                        sentences = best_sentences_for_query(query, retrieved)
-                        if isinstance(sentences, str):
-                            answer = sentences
-                        else:
-                            answer = "\n\n".join(sentences)
-            
-                        # Very basic "citations" – just first few chars of each snippet
-                        citations = []
-                        for i, s in enumerate(sentences):
-                            snippet = s if len(s) <= 120 else s[:120] + "..."
-                            citations.append(f"Doc {i+1}: {snippet}")
-            
-                    except Exception as e:
-                        st.error(f"Simple answer generation failed: {e}")
-                        answer = None
-                        citations = []
-            
-                if answer:
-                    st.success("**Answer (grounded):**")
-                    st.write(answer)
-            
-                    if citations:
-                        st.markdown("**Citations:**")
-                        for c in citations:
-                            st.write("- " + c)
-            
-                    active_session["messages"].append({
-                        "role": "assistant",
-                        "content": answer,
-                        "citations": citations,
-                    })
+if not retrieved:
+    clar = "No documents returned from Pinecone."
+    st.warning(clar)
+    active_session["messages"].append({"role": "assistant", "content": clar})
+else:
+    # 🔹 Extract the `text` field from each retrieved item
+    doc_texts = []
+
+    for item in retrieved:
+        text = ""
+
+        # Case 1: dict from Pinecone
+        if isinstance(item, dict):
+            meta = item.get("metadata", {})
+            if isinstance(meta, dict):
+                text = meta.get("text", "")
+            if not text:
+                text = item.get("text", "")
+
+        # Case 2: tuple/list (score, metadata)
+        elif isinstance(item, (list, tuple)):
+            for part in item:
+                if isinstance(part, dict):
+                    text = part.get("text", "")
+                    if text:
+                        break
+
+        if isinstance(text, str) and text.strip():
+            doc_texts.append(text.strip())
+
+    if not doc_texts:
+        st.warning("Retrieved docs but couldn't find any 'text' fields.")
+    else:
+        with st.spinner("Generating grounded answer..."):
+            # ✅ call the fixed function
+            best_sents = best_sentences_for_query(doc_texts, query, k=3)
+            answer = " ".join(best_sents)
+            citations = best_sents  # or build nicer ones if you want
+
+        st.success("**Answer (grounded):**")
+        st.write(answer)
+
+        if citations:
+            st.markdown("**Citations:**")
+            for c in citations:
+                st.write("- " + c)
+
+        active_session["messages"].append({
+            "role": "assistant",
+            "content": answer,
+            "citations": citations,
+        })
 
             
             #st.rerun()
