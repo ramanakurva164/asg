@@ -4,7 +4,7 @@ numpy>=1.26.4
 pandas==2.2.3
 python-dotenv==1.0.0
 pinecone-client==4.0.0
-
+huggingface_hub==0.25.2
 weaviate-client==4.6.0
 elasticsearch==8.13.0
 openai==1.37.1
