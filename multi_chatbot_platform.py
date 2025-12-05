@@ -343,9 +343,10 @@ with col_right:
                         "content": answer,
                         "citations": citations,
                     })
+                    st.session_state.bots[bot_choice]["sessions"][active_session_id] = active_session
 
             
-            #st.rerun()
+            st.rerun()
 
     st.markdown("---")
     
