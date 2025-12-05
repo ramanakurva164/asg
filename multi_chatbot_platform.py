@@ -14,7 +14,7 @@ from load_data import load_json_to_pinecone_index, load_all_indexes
 import tempfile, concurrent.futures, pathlib
 
 
-RELEVANCE_THRESHOLD = 0.10
+RELEVANCE_THRESHOLD = 0.0
 
 DEFAULT_BOTS = {
     "customer_service": {
