@@ -9,6 +9,7 @@ from embedding import embed_texts
 from connectors.planner.planner import plan_steps_for_query
 from connectors.planner.executor import execute_plan
 from utils import best_sentences_for_query
+from pinecone import Pinecone
 
 
 RELEVANCE_THRESHOLD = 0.10
