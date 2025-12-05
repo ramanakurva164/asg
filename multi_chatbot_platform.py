@@ -297,39 +297,42 @@ with col_right:
                 st.warning(clar)
                 active_session["messages"].append({"role": "assistant", "content": clar})
             else:
-                with st.spinner("Generating grounded answer..."):
+                # 👇 Simple answer directly from retrieved docs, no external LLM
+                with st.spinner("Generating grounded answer (simple mode)..."):
                     try:
-                        resp = execute_plan(steps, retrieved, query)
+                        # If you already have a helper, use it
+                        # (you import best_sentences_for_query at the top)
+                        sentences = best_sentences_for_query(query, retrieved)
+                        if isinstance(sentences, str):
+                            answer = sentences
+                        else:
+                            answer = "\n\n".join(sentences)
+            
+                        # Very basic "citations" – just first few chars of each snippet
+                        citations = []
+                        for i, s in enumerate(sentences):
+                            snippet = s if len(s) <= 120 else s[:120] + "..."
+                            citations.append(f"Doc {i+1}: {snippet}")
+            
                     except Exception as e:
-                        # Show the error instead of infinite "Running..."
-                        st.error(f"Error while generating answer: {e}")
-                        resp = None
+                        st.error(f"Simple answer generation failed: {e}")
+                        answer = None
+                        citations = []
             
-                if resp is not None:
-                    # Debug: see exactly what the executor returned
-                    with st.expander("🔍 Debug – raw executor response"):
-                        st.write(resp)
+                if answer:
+                    st.success("**Answer (grounded):**")
+                    st.write(answer)
             
-                    # Safely extract answer & citations assuming resp is a dict
-                    answer = resp.get("answer") if isinstance(resp, dict) else None
-                    citations = resp.get("citations", []) if isinstance(resp, dict) else []
+                    if citations:
+                        st.markdown("**Citations:**")
+                        for c in citations:
+                            st.write("- " + c)
             
-                    if not answer:
-                        st.warning("Executor returned no 'answer' field. Check executor/planner code.")
-                    else:
-                        st.success("**Answer (grounded):**")
-                        st.write(answer)
-            
-                        if citations:
-                            st.markdown("**Citations:**")
-                            for c in citations:
-                                st.write("- " + c)
-            
-                        active_session["messages"].append({
-                            "role": "assistant",
-                            "content": answer,
-                            "citations": citations,
-                        })
+                    active_session["messages"].append({
+                        "role": "assistant",
+                        "content": answer,
+                        "citations": citations,
+                    })
 
             
             #st.rerun()
