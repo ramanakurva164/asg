@@ -117,7 +117,13 @@ with st.sidebar:
         st.session_state.active_bot = bot_choice
     
     bot = st.session_state.bots[bot_choice]
-    st.caption(f"DEBUG – using index: {bot['index_name']}")
+    try:
+        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+        idx = pc.Index(bot["index_name"])
+        stats = idx.describe_index_stats()
+        st.caption(f"DEBUG – index '{bot['index_name']}' stats: {stats}")
+    except Exception as e:
+        st.caption(f"DEBUG – could not read index stats: {e}")
     
     # Show bot info
     with st.expander("ℹ️ Bot Info"):
